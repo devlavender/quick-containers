@@ -157,7 +157,7 @@ int opt_parse(const char *const *arglist, struct opt_parser *parser)
 
                 if (end_opts) {
                         opt_arg_add(parser->arguments, *arg_ptr);
-                        goto parse_opt_pos_ret;
+                        goto parse_opt_next;
                 }
 
                 if (is_optend(*arg_ptr)) {
