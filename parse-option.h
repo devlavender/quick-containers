@@ -31,21 +31,9 @@
 #define __PARSE_OPTION_H
 
 #include <stdint.h>
+#include <stddef.h>
 
-#define DECL_BIT(bit) (1 << (bit - 1))
-
-#ifdef __STDC_VERSION__
-#if __STDC_VERSION__ >= 202311L
-#define DECL_FLAG(name, bit) constexpr uint8_t name = DECL_BIT(bit)
-#define DECL_CONST(name, code) constexpr int name = code
-#else
-#define DECL_FLAG(name, bit) enum { name = DECL_BIT(bit) }
-#define DECL_CONST(name, code) enum { name = code }
-#endif
-#else
-#define DECL_FLAG(name, bit) enum { name = DECL_BIT(bit) }
-#define DECL_CONST(name, code) enum { name = code }
-#endif
+#include "common.h"
 
 DECL_CONST(OPT_ARGLONG_MAX, 256);
 
