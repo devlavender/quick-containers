@@ -46,7 +46,8 @@ DECL_CONST(OPT_LONG_ONLY, OPT_FLAG_HAS_LONG);
 DECL_CONST(OPT_SHORT_LONG, OPT_FLAG_HAS_SHORT | OPT_FLAG_HAS_LONG);
 DECL_CONST(OPT_SHORT_ARG, OPT_FLAG_HAS_SHORT | OPT_FLAG_HAS_ARG);
 DECL_CONST(OPT_LONG_ARG, OPT_FLAG_HAS_LONG | OPT_FLAG_HAS_ARG);
-DECL_CONST(OPT_SHORT_LONG_ARG, OPT_FLAG_HAS_SHORT | OPT_FLAG_HAS_LONG | OPT_FLAG_HAS_ARG);
+DECL_CONST(OPT_SHORT_LONG_ARG,
+        OPT_FLAG_HAS_SHORT | OPT_FLAG_HAS_LONG | OPT_FLAG_HAS_ARG);
 
 struct flag;
 
@@ -60,7 +61,6 @@ struct opt_flag
         uint8_t flag_opts;
         char short_name;
         const char *long_name;
-        const char *description;
         const char *help_text;
         opt_flag_arg_parser arg_parser;
         void *data;
@@ -68,36 +68,36 @@ struct opt_flag
         // TODO: Optimize member order
 };
 
-#define OPT_FLAG(id, short, long, flags, parser, data, desc, help) \
+#define OPT_FLAG(id, short, long, flags, parser, data, help) \
         { .flag_id = id, .short_name = short, .long_name = long, \
           .flag_opts = flags, .arg_parser = parser, .data = data, \
-          .description = desc, .help_text = help }
+          .help_text = help }
 
-#define OPT_FLAG_LONGONLY(id, long, parser, data, desc, help) \
-        OPT_FLAG(id, 0, long, OPT_LONG_ONLY, parser, data, desc, help)
-#define OPT_FLAG_SHORTONLY(id, short, parser, data, desc, help) \
-        OPT_FLAG(id, short, NULL, OPT_SHORT_ONLY, parser, data, desc, help)
-#define OPT_FLAG_SHORTLONG(id, short, long, parser, data, desc, help) \
-        OPT_FLAG(id, short, long, OPT_SHORT_LONG, parser, data, desc, help)
-#define OPT_FLAG_SHORTARG(id, short, parser, data, desc, help) \
-        OPT_FLAG(id, short, NULL, OPT_SHORT_ARG, parser, data, desc, help)
-#define OPT_FLAG_LONGARG(id, long, parser, data, desc, help) \
-        OPT_FLAG(id, 0, long, OPT_LONG_ARG, parser, data, desc, help)
-#define OPT_FLAG_SHORTLONGARG(id, short, long, parser, data, desc, help) \
-        OPT_FLAG(id, short, long, OPT_SHORT_LONG_ARG, parser, data, desc, help)
+#define OPT_FLAG_LONGONLY(id, long, parser, data, help) \
+        OPT_FLAG(id, 0, long, OPT_LONG_ONLY, parser, data, help)
+#define OPT_FLAG_SHORTONLY(id, short, parser, data, help) \
+        OPT_FLAG(id, short, NULL, OPT_SHORT_ONLY, parser, data, help)
+#define OPT_FLAG_SHORTLONG(id, short, long, parser, data, help) \
+        OPT_FLAG(id, short, long, OPT_SHORT_LONG, parser, data, help)
+#define OPT_FLAG_SHORTARG(id, short, parser, data, help) \
+        OPT_FLAG(id, short, NULL, OPT_SHORT_ARG, parser, data, help)
+#define OPT_FLAG_LONGARG(id, long, parser, data, help) \
+        OPT_FLAG(id, 0, long, OPT_LONG_ARG, parser, data, help)
+#define OPT_FLAG_SHORTLONGARG(id, short, long, parser, data, help) \
+        OPT_FLAG(id, short, long, OPT_SHORT_LONG_ARG, parser, data, help)
 
-#define OPT_FLAG_LONGONLY_NODATA(id, long, parser, desc, help) \
-        OPT_FLAG_LONGONLY(id, long, parser, NULL, desc, help)
-#define OPT_FLAG_SHORTONLY_NODATA(id, short, parser, desc, help) \
-        OPT_FLAG_SHORTONLY(id, short, parser, NULL, desc, help)
-#define OPT_FLAG_SHORTLONG_NODATA(id, short, long, parser, desc, help) \
-        OPT_FLAG_SHORTLONG(id, short, long, parser, NULL, desc, help)
-#define OPT_FLAG_SHORTARG_NODATA(id, short, parser, desc, help) \
-        OPT_FLAG_SHORTARG(id, short, parser, NULL, desc, help)
-#define OPT_FLAG_LONGARG_NODATA(id, long, parser, desc, help) \
-        OPT_FLAG_LONGARG(id, long, parser, NULL, desc, help)
-#define OPT_FLAG_SHORTLONGARG_NODATA(id, short, long, parser, desc, help) \
-        OPT_FLAG_SHORTLONGARG(id, short, long, parser, NULL, desc, help)
+#define OPT_FLAG_LONGONLY_NODATA(id, long, parser, help) \
+        OPT_FLAG_LONGONLY(id, long, parser, NULL, help)
+#define OPT_FLAG_SHORTONLY_NODATA(id, short, parser, help) \
+        OPT_FLAG_SHORTONLY(id, short, parser, NULL, help)
+#define OPT_FLAG_SHORTLONG_NODATA(id, short, long, parser, help) \
+        OPT_FLAG_SHORTLONG(id, short, long, parser, NULL, help)
+#define OPT_FLAG_SHORTARG_NODATA(id, short, parser, help) \
+        OPT_FLAG_SHORTARG(id, short, parser, NULL, help)
+#define OPT_FLAG_LONGARG_NODATA(id, long, parser, help) \
+        OPT_FLAG_LONGARG(id, long, parser, NULL, help)
+#define OPT_FLAG_SHORTLONGARG_NODATA(id, short, long, parser, help) \
+        OPT_FLAG_SHORTLONGARG(id, short, long, parser, NULL, help)
 
 struct opt_argument
 {
