@@ -135,6 +135,16 @@ DECL_CONST(OPT_RET_ERR_NOPARSER, -5);
  * @param arglist The list of command-line arguments (argv)
  * @param flags The array of opt_flag definitions to match against
  * @return OPT_RET_SUCCESS on success or error code on failure
+ * @description This function iterates through the provided arglist and
+ *         matches each argument against the provided opt_flag
+ *         definitions. When non-flags (args) are found other than
+ *         after options, or when the end of options marker ("--") is
+ *         found, the remainder arguments are stored into the parser's
+ *         arguments list. If an error occurs during parsing, the
+ *         function returns the error and keeps the opt_index at its
+ *         current position to inform the caller where the error happens.
+ * @notes The argument list is dynamically allocated and is only freed
+ *        when opt_free() is called on the parser.
  */
 int opt_parse(const char *const *arglist, struct opt_parser *parser);
 

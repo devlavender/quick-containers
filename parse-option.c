@@ -80,6 +80,23 @@ static inline bool is_shortopt(const char *opt)
 }
 
 /**
+ * is_optend(opt)
+ * @fn bool is_optend(const char *opt)
+ * @brief Helper function to check if currently parsed option is the end
+ *        of options (marker "--").
+ * @param opt The option string to check
+ * @return true if the option is the end of options marker, false
+ *         otherwise
+ * @details The end of options marker is a double hyphen ("--") followed
+ *          by a null terminator.
+ */
+static inline bool is_optend(const char *opt)
+{
+        return *GET_IDX(opt, 0) == '-' && *GET_IDX(opt, 1) == '-' &&
+               *GET_IDX(opt, 2) == '\0';
+}
+
+/**
  * find_flag(arg, flag_list)
  * @fn struct opt_flag *find_flag(const char *arg,
  *                                struct opt_flag **flag_list)
@@ -101,12 +118,15 @@ static struct opt_flag *find_flag(const char *arg,
         CHECK_NULL(flag_list);
         CHECK_NULL(*flag_list); //See if it's not empty
 
+        RET_IF(is_optend(arg), NULL);
+        
         while ((ret = *GET_IDX(flag_list, i++)) != NULL) {
                 if (is_shortopt(arg) &&
                     ret->flag_opts & OPT_FLAG_HAS_SHORT) {
                         if (ret->short_name == *GET_IDX(arg, 1)) return ret;
                         continue;
                 }
+
                 if (is_longopt(arg, false) &&
                     ret->flag_opts & OPT_FLAG_HAS_LONG) {
                         if (!strncmp(arg, ret->long_name, OPT_ARGLONG_MAX)) {
@@ -124,8 +144,9 @@ int opt_parse(const char *const *arglist, struct opt_parser *parser)
         struct opt_flag *curopt = NULL;
         char **arg_ptr = (char **)arglist;
         int ret = 0;
-        size_t i = 0;
+        //size_t i = 0;
         size_t inc = 0;
+        bool end_opts = false;
 
         RET_IF_NULL(arglist, OPT_RET_ERR_INVALID);
         RET_IF_NULL(parser, OPT_RET_ERR_INVALID);
@@ -133,6 +154,18 @@ int opt_parse(const char *const *arglist, struct opt_parser *parser)
 
         while (arg_ptr != NULL && *arg_ptr != NULL) {
                 inc = 1;
+
+                if (end_opts) {
+                        opt_arg_add(parser->arguments, *arg_ptr);
+                        goto parse_opt_pos_ret;
+                }
+
+                if (is_optend(*arg_ptr)) {
+                        arg_ptr = GET_IDX(arg_ptr, 1);
+                        end_opts = true;
+                        break;
+                }
+
                 curopt = find_flag(*arg_ptr, parser->flags);
                 if (curopt == NULL) {
                         if (is_longopt(*arg_ptr, false) ||
@@ -157,11 +190,13 @@ parse_opt_pos_ret:
                 if (ret != OPT_RET_SUCCESS) {
                         return ret;
                 }
-
-                i += inc;
                 parser->opt_index += inc;
+                //i += inc;
+parse_opt_next:                
                 arg_ptr = GET_IDX(arg_ptr, inc);
         }
+
+
 
         return OPT_RET_SUCCESS;
 }
