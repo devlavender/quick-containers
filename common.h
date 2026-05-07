@@ -153,16 +153,18 @@
 #if __STDC_VERSION__ >= 202311L
 #define DECL_FLAG(name, bit) constexpr uint8_t name = DECL_BIT(bit)
 #define DECL_TCONST(name, value, type) constexpr type name = value
-#define DECL_CONST(name, code) DECL_CONST_TYPE(name, int, code)
+#define DECL_CONST(name, value) DECL_TCONST(name, value, uint8_t)
 #else
 #define DECL_FLAG(name, bit) enum { name = DECL_BIT(bit) }
 #define DECL_TCONST(name, value, type) enum { name = value }
-#define DECL_CONST(name, code) DECL_CONST_TYPE(name, int, code)
+#define DECL_CONST(name, value) DECL_TCONST(name, value, uint8_t)
 #endif
 #else
 #define DECL_TCONST(name, value, type) enum { name = value }
-#define DECL_CONST(name, code) DECL_CONST_TYPE(name, int, code)
+#define DECL_CONST(name, value) DECL_TCONST(name, value, uint8_t)
 #endif
 
+#define MAX(a, b) (a >= b ? a : b)
+#define MIN(a, b) (a <= b ? a : b)
 
 #endif//__COMMON_H
