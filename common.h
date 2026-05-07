@@ -167,4 +167,79 @@
 #define MAX(a, b) (a >= b ? a : b)
 #define MIN(a, b) (a <= b ? a : b)
 
+DECL_TCONST(CHR_NUL, 0x00, char);
+
+DECL_TCONST(STR_WRAPPER_MAX_TOKENS, 5, size_t);
+
+struct wrapped_string
+{
+        char *start_string;
+        char *tokens[STR_WRAPPER_MAX_TOKENS];
+        size_t length;
+        size_t token_count;
+        struct wrapped_string_token *first_token;
+};
+
+DECL_TCONST(STR_WRAPPER_SUCCESS, 0, int);
+DECL_TCONST(STR_WRAPPER_EUNFIT, -1, int);
+DECL_TCONST(STR_WRAPPER_EINVAL, -2, int);
+
+/**
+ * str_wrapper(wrapstr, str, length)
+ * @fn int str_wrapper(struct wrapped_string *wrapstr, char *str,
+ *             size_t length)
+ * @brief Wraps a string into multiple tokens based on the target length
+ * @param wrapstr The wrapped_string struct to populate with the wrapped
+ *        tokens
+ * @param str The input string to wrap
+ * @param length The target length for each wrapped token
+ * @return STR_WRAPPER_SUCCESS on success or error cosnt otherwise
+ *
+ */
+
+int str_wrapper(struct wrapped_string *wrapstr, size_t length);
+
+/**
+ * wrapped_string_init(str)
+ * @fn struct wrapped_string *wrapped_string_init(const char *str,
+ *                size_t length)
+ * @brief Initializes a wrapped_string struct with the provided string
+ * @param str The input string to wrap
+ * @param length The length of the input string (zero for unlimited)
+ * @return A pointer to the initialized wrapped_string struct or NULL on
+ *         failure
+ * @details This function allocates memory for the wrapped_string struct
+ *          and initializes it with a copy of the informed string. Both
+ *          are freed by wrapped_string_free() -- caller must call it to
+ *          avoid memory leaks.
+ * @note A length of zero means that the string can be of unlimited
+ *       length.
+ */
+struct wrapped_string *wrapped_string_init(const char *str,
+                                           size_t length);
+
+/**
+ * wrapped_string_free(wrapstr)
+ * @fn void str_wrapper_free(struct wrapped_string *wrapstr)
+ * @brief Frees the memory allocated for a wrapped_string struct and its
+ *        tokens
+ * @param wrapstr The wrapped_string struct to free
+ */
+void wrapped_string_free(struct wrapped_string *wrapstr);
+
+/**
+ * str_clean(str, length)
+ * @fn size_t str_clean(char *str, size_t length)
+ * @brief Cleans a string by stripping (removing leading and trailing
+ *        whitespaces), removing non-printable characters, control
+ *        characters, replacing tabs, form-feeds, newlines, carriage
+ *        returns and all non-printable characters other than \0 from it.
+ * @param str The string to clean
+ * @param length The length of the string to clean
+ * @return The length of the cleaned string
+ * @details This function modifies the input string in-place, and when
+ *          reducing its size fills the end with a null-terminator
+ *          returning the new length of the string.
+ */
+size_t str_clean(char *str, size_t length);
 #endif//__COMMON_H
